@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import App from './global/ui/components/App/App';
 import * as serviceWorker from './serviceWorker';
+import initializeFirebase from "./global/infra/Firebase";
+
+initializeFirebase()
 
 ReactDOM.render(
   <React.StrictMode>
