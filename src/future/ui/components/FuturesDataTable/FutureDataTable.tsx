@@ -44,9 +44,9 @@ const FutureDataTable: React.FunctionComponent<Props> = ({name, data}) => {
                         {
                             isFollowedSymbols(row.symbol) ?
                                 <Button color={'default'} variant={'contained'}
-                                        onClick={() => unfollow(row.symbol)}>UnFollow</Button> :
+                                        onClick={async () => await unfollow(row.symbol)}>UnFollow</Button> :
                                 <Button color={'default'} variant={'contained'}
-                                        onClick={() => follow(row.symbol, row)}>Follow</Button>
+                                        onClick={async () => await follow(row.symbol, row)}>Follow</Button>
                         }
                         <Link href={`https://ca.finance.yahoo.com/chart/${row.symbol}`}>{row.symbol}</Link>
                     </Fragment>)

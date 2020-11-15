@@ -1,11 +1,13 @@
-const yahooStockAPI = require('yahoo-stock-api');
+import axios from "axios";
+
 
 const getCurrentPrice = async (symbol: string) => {
-    try {
-        return yahooStockAPI.getSymbol(symbol)
-    } catch (e) {
-        return 0;
-    }
+    return axios.post<{ price: number }>(
+        `https://us-central1-stockbot-edd4e.cloudfunctions.net/getCurrentStockPrice`,
+        {
+            symbol
+        }
+    );
 }
 
 export default getCurrentPrice

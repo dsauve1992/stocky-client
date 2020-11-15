@@ -11,10 +11,7 @@ const useFollowedSymbols = () => {
         try {
             setLoading(true)
             const data = await new FollowedSymbolRepository().getAll();
-
-            for (const ticker of data) {
-                ticker.currentPrice = await getCurrentPrice(ticker.symbol)
-            }
+            await _addCurrentPriceOnTicker(data);
 
             setFollowedSymbols(data);
         } catch (error) {
@@ -25,8 +22,12 @@ const useFollowedSymbols = () => {
     }
 
     const follow = async (symbol: string, data: any) => {
-        await new FollowedSymbolRepository().insert(symbol, data)
-        setFollowedSymbols(prevState => [...prevState, data])
+        await new FollowedSymbolRepository().insert(symbol, {
+            industry : data.industry,
+            followSince : new Date().valueOf(),
+            priceOnSignal : data.current_price
+        })
+        setFollowedSymbols(prevState => [...prevState, {...data, priceOnSignal : data.current_price}])
     }
 
     const unfollow = async (symbol: string) => {
@@ -52,6 +53,16 @@ const useFollowedSymbols = () => {
             isFollowedSymbols: useCallback(isFollowedSymbols, [followedSymbols])
         }
     }
+}
+
+const _addCurrentPriceOnTicker = async (data: any[]) => {
+    for (const ticker of data) {
+        const {data: {price}} = await getCurrentPrice(ticker.symbol)
+        ticker.currentPrice = price;
+        ticker.diff = ((ticker.currentPrice - ticker.priceOnSignal) / ticker.priceOnSignal) * 100;
+    }
+
+    return data;
 }
 
 export default useFollowedSymbols
